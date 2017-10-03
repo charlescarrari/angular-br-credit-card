@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test</title>
+</head>
+
+<body>
+    <div ng-app="myShoppingList" ng-controller="myCtrl">
+        <div id="card-container"></div>
+        <card name="cardForm" data-card data-width="200" data-ng-form="cardForm" data-card-container="#card-container">
+            number 
+            <input 
+                name="card_number"
+                card-number 
+                required
+                data-ng-model="myCtrl.number" 
+                data-payments-format="card" 
+                data-payments-validate="card"
+                data-payments-type-model="myCtrl.brand"
+                >
+            <br>
+            name 
+            <input 
+                name="card_name" 
+                required
+                card-name 
+                data-ng-model="myCtrl.name"
+                >
+            <br>
+            expiry mm/yy
+            <input 
+                name="card_expiry" 
+                required
+                card-expiry 
+                required
+                data-ng-model="myCtrl.expiry" 
+                payments-format="expiry"
+                payments-validate="expiry"
+                >
+            <br>
+            cvc
+            <input 
+                name="card_cvc" 
+                required
+                card-cvc
+                data-ng-model="myCtrl.cvc" 
+                payments-format="cvc"
+                payments-validate="cvc"
+                >
+        </card>
+        <br>
+        Valid: {{cardForm.$valid}}
+        <br>
+        brand: {{myCtrl.brand || 'null'}}
+    </div>
+
+    <script src="card.bundle.js"></script>
+
+</body>
+
+</html>
