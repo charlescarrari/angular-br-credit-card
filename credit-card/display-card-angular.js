@@ -18,7 +18,6 @@
       },
       controller: 'CardCtrl',
       link: function (scope, element, attributes, cardCtrl) {
-        console.log('peguei')
         var defaultPlaceholders = {
           number: '•••• •••• •••• ••••',
           name: 'Full Name',
