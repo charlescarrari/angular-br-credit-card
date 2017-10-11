@@ -488,14 +488,14 @@ export default (function(f) {
 							nameDisplay: '.jp-card-name'
 						},
 						messages: {
-							validDate: 'valid\nthru',
-							monthYear: 'month/year'
+							validDate: 'válido\naté',
+							monthYear: 'mês/ano'
 						},
 						placeholders: {
 							number: '&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;',
 							cvc: '&bull;&bull;&bull;',
 							expiry: '&bull;&bull;/&bull;&bull;',
-							name: 'Full Name'
+							name: 'Nome no cartão'
 						},
 						classes: {
 							valid: 'jp-card-valid',

@@ -21,13 +21,13 @@
         console.log('peguei')
         var defaultPlaceholders = {
           number: '•••• •••• •••• ••••',
-          name: 'Full Name',
+          name: 'Nome no cartão',
           expiry: '••/••',
           cvc: '•••'
         };
         var defaultMessages = {
-          validDate: 'valid\nthru',
-          monthYear: 'month/year',
+          validDate: 'válido\naté',
+          monthYear: 'mês/ano',
         };
         var defaultOptions = {
           debug: false,
