@@ -6,6 +6,7 @@ import {Format,paymentsFormat} from './validations/format.factory'
 import Common from './validations/common.factory'
 import displayModule from './display-card-angular.js'
 import cardCode from './card.js'
+import cardSelectBrand from './validations/select-brand.directive'
 
 var mainModule = angular.module('mundipagg.angularjs-credit-card', [displayModule])
 	.service('binService',binsService)
@@ -15,5 +16,6 @@ var mainModule = angular.module('mundipagg.angularjs-credit-card', [displayModul
 	.directive('paymentsValidate',paymentsValidate)
 	.factory('_Format',Format)
 	.directive('paymentsFormat',paymentsFormat)
+	.directive('cardSelectBrand',cardSelectBrand)
 	.factory('Common',Common).name;
 export default mainModule;

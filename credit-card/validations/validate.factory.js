@@ -10,34 +10,11 @@ export function Validate(Cards, Common, $parse) {
         return -1;
     };
 
-    var _luhnCheck = function (num) {
-        var digit, digits, odd, sum, i, len;
-
-        odd = true;
-        sum = 0;
-        digits = (num + '').split('').reverse();
-
-        for (i = 0, len = digits.length; i < len; i++) {
-
-            digit = digits[i];
-            digit = parseInt(digit, 10);
-
-            if ((odd = !odd)) {
-                digit *= 2;
-            }
-
-            if (digit > 9) {
-                digit -= 9;
-            }
-
-            sum += digit;
-
-        }
-
-        return sum % 10 === 0;
-    };
+    var _luhnCheck = Common.luhnCheck;
 
     var _validators = {};
+
+    _validators.luhnCheck = _luhnCheck;
 
     _validators['cvc'] = function (cvc, ctrl, scope, attr) {
         var ref, ref1;
@@ -50,11 +27,6 @@ export function Validate(Cards, Common, $parse) {
         if (!/^\d+$/.test(cvc)) {
             return false;
         }
-        var type;
-        if (attr.paymentsTypeModel) {
-            var typeModel = $parse(attr.paymentsTypeModel);
-            type = typeModel(scope);
-        }
 
         return cvc.length === Cards.getCard().cvv;
     };
@@ -62,18 +34,15 @@ export function Validate(Cards, Common, $parse) {
     _validators['card'] = function (num, ctrl, scope, attr) {
         var card = Cards.getCard();
         var typeModel;
-        if (card.brand !== 'default') {
-            num = (num + '').replace(/\D/g, '');
-            var ret = (__indexOf.call(card.lenghts, num.length) >= 0) && (_luhnCheck(num));
-            if (attr.paymentsTypeModel) {
-                typeModel = $parse(attr.paymentsTypeModel);
-                typeModel.assign(scope, card.brand);
-            }
-            return ret;
-        } else if (num) {
-            ctrl.$card = null;
+        num = (num + '').replace(/\D/g, '');
+        var ret = (__indexOf.call(card.lenghts, num.length) >= 0) && (_luhnCheck(num));
+
+        if (attr.paymentsTypeModel && card.brand !== 'default' && !Cards.manualMode) {
+            typeModel = $parse(attr.paymentsTypeModel);
+            typeModel.assign(scope, card.brand);
         }
-        return false;
+        
+        return ret;
     };
 
     _validators['expiry'] = function (val) {
@@ -157,8 +126,8 @@ export function ValidateWatch(_Validate) {
     };
 };
 
-paymentsValidate.$inject = ['$window', '_Validate', '_ValidateWatch', '$q', 'Cards', '$parse']; //directive
-export function paymentsValidate($window, _Validate, _ValidateWatch, $q, Cards, $parse) {
+paymentsValidate.$inject = ['$window', '_Validate', '_ValidateWatch', '$q', 'Cards', '$parse', 'Common']; //directive
+export function paymentsValidate($window, _Validate, _ValidateWatch, $q, Cards, $parse, Common) {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -174,21 +143,21 @@ export function paymentsValidate($window, _Validate, _ValidateWatch, $q, Cards, 
             _ValidateWatch(type, ctrl, scope, attr);
             var validateFn = function (val) {
                 if (!val) {
+                    Cards.clearBrand(scope,attr);
+                    Cards.manualMode = false;
                     return val;
                 }
                 var entry = val.toString().replace(/\D/g, '');
                 if (type === 'card') {
                     ctrl.$asyncValidators.card = function (modelValue, viewValue) {
                         return $q(function (resolve, reject) {
-
                             var bin = entry.slice(0, 6);
-
-                            if (Cards.getCard().originBin !== bin && entry.length >= 6 && !ctrl.searchingBin) {
+                            if (Cards.getCard().originBin !== bin && entry.length === 6 && !ctrl.searchingBin && !Cards.manualMode) {
                                 ctrl.searchingBin = true;
                                 Cards.identify(bin).then(function () {
                                     ctrl.searchingBin = false;
                                     var valid = _Validate(type, ctrl.lastVal, ctrl, scope, attr);
-                                    resolver(resolve, reject, valid);
+                                    (valid ? resolve : reject)();
                                     ctrl.$setValidity('card', valid);
                                 }).catch(function () {
                                     ctrl.searchingBin = false;
@@ -196,17 +165,12 @@ export function paymentsValidate($window, _Validate, _ValidateWatch, $q, Cards, 
                                     ctrl.$setValidity('card', false);
                                 });
 
-                            } else if (entry.length < 6) {
-                                resolver(resolve, reject, false);
-                                Cards.clearBrand();
-                                if (attr.paymentsTypeModel) {
-                                  var typeModel = $parse(attr.paymentsTypeModel);
-                                  typeModel.assign(scope, null);
-                                }
-                            } else if (Cards.getCard().brand !== 'default' || Cards.getCard().originBin === bin) {
+                            } else if (!Cards.manualMode && entry.length < 6 ) {
+                                reject();
+                                Cards.clearBrand(scope,attr);
+                            } else if (Cards.getCard().originBin === bin || Cards.manualMode) {
                                 var valid = _Validate(type, modelValue, ctrl, scope, attr);
-                                resolver(resolve, reject, valid);
-
+                                (valid ? resolve : reject)();
                             } else if (ctrl.searchingBin) {
                                 ctrl.lastVal = modelValue;
                             }
@@ -222,6 +186,10 @@ export function paymentsValidate($window, _Validate, _ValidateWatch, $q, Cards, 
                 // return valid ? val : undefined;
                 return val;
             };
+
+            scope.$watch(attr.paymentsTypeModel, function (newVal, oldVal) {
+                Cards.setBrandInCard(newVal);
+            });
 
             ctrl.$formatters.push(validateFn);
             ctrl.$parsers.push(validateFn);

@@ -83,6 +83,33 @@ export default function Common() {
 	
 		}
 	}
+	
+	ret.luhnCheck = function (num) {
+        var digit, digits, odd, sum, i, len;
+
+        odd = true;
+        sum = 0;
+        digits = (num + '').split('').reverse();
+
+        for (i = 0, len = digits.length; i < len; i++) {
+
+            digit = digits[i];
+            digit = parseInt(digit, 10);
+
+            if ((odd = !odd)) {
+                digit *= 2;
+            }
+
+            if (digit > 9) {
+                digit -= 9;
+            }
+
+            sum += digit;
+
+        }
+
+        return sum % 10 === 0;
+    };
 
 	ret.matches = function(el, selector) {
 		return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, selector);

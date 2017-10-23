@@ -59,7 +59,7 @@ export function Format(Cards, Common, $filter) {
         });
         var newVal = value.substr(0, value.length - 1);
 
-        if (nextGap || length <= lastMaxlength) {
+        if (nextGap || length <= 19) {
             newVal = (value);
         }
 
