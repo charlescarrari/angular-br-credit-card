@@ -34,10 +34,13 @@ export function Format(Cards, Common, $filter) {
         formatted = '';
         card = Cards.getCard();
         gaps = card.gaps;
-
+        
         if (!card) {
             return num;
         }
+
+        if(card.brand !== 'amex')
+            gaps.push(16);
 
         num.split('').forEach(function (element, index) {
             // var includes = gaps.includes(index + 1);

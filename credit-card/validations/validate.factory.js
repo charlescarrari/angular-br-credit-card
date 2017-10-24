@@ -32,17 +32,24 @@ export function Validate(Cards, Common, $parse) {
     };
 
     _validators['card'] = function (num, ctrl, scope, attr) {
-        var card = Cards.getCard();
-        var typeModel;
-        num = (num + '').replace(/\D/g, '');
-        var ret = (__indexOf.call(card.lenghts, num.length) >= 0) && (_luhnCheck(num));
+        var card = Cards.getCard(), 
+            luhnValid = false, 
+            lenValid = false;
 
-        if (attr.paymentsTypeModel && card.brand !== 'default' && !Cards.manualMode) {
-            typeModel = $parse(attr.paymentsTypeModel);
-            typeModel.assign(scope, card.brand);
-        }
+        num = (num + '').replace(/\D/g, '');
         
-        return ret;
+        lenValid = __indexOf.call(card.lenghts, num.length) >= 0;
+        luhnValid = _luhnCheck(num);
+
+        if (attr.paymentsTypeModel && card.brand !== 'default' && Cards.getWarningState() !== 'manualMode') {
+            $parse(attr.paymentsTypeModel).assign(scope, card.brand);
+        }
+
+        if(!lenValid && luhnValid){
+            Cards.setWarningState(scope,attr,'invalidCardLen');
+        }
+
+        return lenValid;
     };
 
     _validators['expiry'] = function (val) {
@@ -144,7 +151,6 @@ export function paymentsValidate($window, _Validate, _ValidateWatch, $q, Cards, 
             var validateFn = function (val) {
                 if (!val) {
                     Cards.clearBrand(scope,attr);
-                    Cards.manualMode = false;
                     return val;
                 }
                 var entry = val.toString().replace(/\D/g, '');
@@ -152,7 +158,7 @@ export function paymentsValidate($window, _Validate, _ValidateWatch, $q, Cards, 
                     ctrl.$asyncValidators.card = function (modelValue, viewValue) {
                         return $q(function (resolve, reject) {
                             var bin = entry.slice(0, 6);
-                            if (Cards.getCard().originBin !== bin && entry.length === 6 && !ctrl.searchingBin && !Cards.manualMode) {
+                            if (Cards.getCard().originBin !== bin && entry.length === 6 && !ctrl.searchingBin && Cards.getWarningState() !== 'manualMode') {
                                 ctrl.searchingBin = true;
                                 Cards.identify(bin).then(function () {
                                     ctrl.searchingBin = false;
@@ -165,10 +171,10 @@ export function paymentsValidate($window, _Validate, _ValidateWatch, $q, Cards, 
                                     ctrl.$setValidity('card', false);
                                 });
 
-                            } else if (!Cards.manualMode && entry.length < 6 ) {
+                            } else if (Cards.getWarningState() !== 'manualMode' && entry.length < 6 ) {
                                 reject();
                                 Cards.clearBrand(scope,attr);
-                            } else if (Cards.getCard().originBin === bin || Cards.manualMode) {
+                            } else if (Cards.getCard().originBin === bin || Cards.getWarningState() === 'manualMode') {
                                 var valid = _Validate(type, modelValue, ctrl, scope, attr);
                                 (valid ? resolve : reject)();
                             } else if (ctrl.searchingBin) {

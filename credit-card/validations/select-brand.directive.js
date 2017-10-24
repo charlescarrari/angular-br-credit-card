@@ -10,10 +10,8 @@ export default function cardSelectBrand($window, _Format, Cards, $parse) {
             });
             elem[0].addEventListener('change',(event)=>{
                 if(oldBrand !== ngModel.$modelValue){
-                    Cards.manualMode = true;
+                    Cards.setWarningState(scope,attr,'manualMode');
                     oldBrand = ngModel.$modelValue;
-                    if (attr.paymentsManualModeModel) $parse(attr.paymentsManualModeModel).assign(scope, Cards.manualMode);
-                    scope.$apply();
                 }
             });
         }

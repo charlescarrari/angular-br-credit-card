@@ -13,10 +13,10 @@ export default function Card(binService,$q, $parse) {
 		'originBin': ''
 	};
 
-	var _manualMode =  false;
+	var _warningState = 'off';
 
 	var _identify = function(bin) {
-		_clearBrand();
+		_clearBrandDisplay();
 		return $q(function(resolve, reject) { //jshint ignore: line
 			binService.getBrandsByBIN(bin).then(function(res) {
 				identifiedCard = res.data;
@@ -37,7 +37,7 @@ export default function Card(binService,$q, $parse) {
 			var typeModel = $parse(attr.paymentsTypeModel);
 			typeModel.assign(scope, null);
 		}
-		_manualMode = false;
+		_setWarningState(scope,attr,'off')
 		identifiedCard = defaultCard;
 	}
 
@@ -71,12 +71,25 @@ export default function Card(binService,$q, $parse) {
 		return identifiedCard || defaultCard;
 	}
 
+	function _getWarningState(){
+		return _warningState;
+	}
+
+	function _setWarningState(scope,attr,newState){
+		_warningState = newState;
+		if (attr.paymentsManualModeModel) $parse(attr.paymentsManualModeModel).assign(scope, _warningState);
+		if(!scope.$$phase) {
+			scope.$apply();
+		}
+	}
+
 	return {
 		identify: _identify,
 		getCard: _getCard,
 		clearBrand: _clearBrand,
 		setBrandInCard: _setBrandInCard,
-		manualMode:  _manualMode
+		getWarningState: _getWarningState,
+		setWarningState: _setWarningState
 	};
 
 };
