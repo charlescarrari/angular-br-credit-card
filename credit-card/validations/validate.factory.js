@@ -45,9 +45,9 @@ export function Validate(Cards, Common, $parse) {
             $parse(attr.paymentsTypeModel).assign(scope, card.brand);
         }
 
-        if(!lenValid && luhnValid){
-            Cards.setWarningState(scope,attr,'invalidCardLen');
-        }
+        // if(!lenValid && luhnValid){
+        //     Cards.setWarningState(scope,attr,'invalidCardLen');
+        // }
 
         return lenValid;
     };
