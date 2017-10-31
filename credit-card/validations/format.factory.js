@@ -105,6 +105,8 @@ export function Format(Cards, Common, $filter) {
             var $target, value, returnEl, entry;
             $target = angular.element(e.target);
             entry = $target.val().replace(/\D/g, '');
+            if(!entry)
+                return;
             return Cards.identify(entry.slice(0, 6)).then(function () {
                 value = _getFormattedCardNumber(entry);
                 returnEl = $target.val(value);
@@ -135,8 +137,8 @@ export function Format(Cards, Common, $filter) {
         var digit = Common.getSrcElement(e).value[Common.getSrcElement(e).value.length - 1];
         var val = target.val();
         var oldVal = angular.copy(val.substr(0, val.length - 1));
-        var cvcLen = Cards.getCard().cvv;
-
+        var cvcLen = Cards.getWarningState() === 'manualMode' ? 4 : Cards.getCard().cvv;
+        
         if (val.length < cvcLen + 1) {
             return;
         } else {

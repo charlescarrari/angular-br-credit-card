@@ -27,7 +27,9 @@ export function Validate(Cards, Common, $parse) {
         if (!/^\d+$/.test(cvc)) {
             return false;
         }
-
+        if(Cards.getWarningState() === 'manualMode')
+            return cvc.length > 2;
+              
         return cvc.length === Cards.getCard().cvv;
     };
 
@@ -149,12 +151,14 @@ export function paymentsValidate($window, _Validate, _ValidateWatch, $q, Cards, 
 
             _ValidateWatch(type, ctrl, scope, attr);
             var validateFn = function (val) {
-                if (!val) {
-                    Cards.clearBrand(scope,attr);
-                    return val;
-                }
-                var entry = val.toString().replace(/\D/g, '');
                 if (type === 'card') {
+                    // console.log(val.toString().replace(/\D/g, '') === "");
+                    if ( (!val) || (val.toString().replace(/\D/g, '')=== "")) {
+                        Cards.clearBrand(scope,attr);
+                        return val;
+                    }
+                    var entry = val.toString().replace(/\D/g, '');
+                    
                     ctrl.$asyncValidators.card = function (modelValue, viewValue) {
                         return $q(function (resolve, reject) {
                             var bin = entry.slice(0, 6);

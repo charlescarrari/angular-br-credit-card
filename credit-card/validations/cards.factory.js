@@ -21,11 +21,12 @@ export default function Card(binService,$q, $parse) {
 			binService.getBrandsByBIN(bin).then(function(res) {
 				identifiedCard = res.data;
 				identifiedCard.originBin = bin;
+				identifiedCard.inUse = true;
 				_setBrandInCard(identifiedCard.brand);
 				resolve();
 			}).catch(function(error) {
-				identifiedCard = defaultCard;
 				identifiedCard.originBin = bin;
+				identifiedCard.inUse = false;
 				reject('Erro ao identificar o cartão');
 			});
 		});
@@ -37,8 +38,9 @@ export default function Card(binService,$q, $parse) {
 			var typeModel = $parse(attr.paymentsTypeModel);
 			typeModel.assign(scope, null);
 		}
-		_setWarningState(scope,attr,'off')
+		_setWarningState(scope,attr,'off');
 		identifiedCard = defaultCard;
+		identifiedCard.inUse = false;
 	}
 
 	function _clearBrandDisplay(){
@@ -68,7 +70,7 @@ export default function Card(binService,$q, $parse) {
 	}
 
 	function _getCard() {
-		return identifiedCard || defaultCard;
+		return identifiedCard.inUse ? identifiedCard : defaultCard;
 	}
 
 	function _getWarningState(){
