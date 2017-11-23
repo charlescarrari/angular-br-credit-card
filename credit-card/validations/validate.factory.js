@@ -51,7 +51,7 @@ export function Validate(Cards, Common, $parse) {
         //     Cards.setWarningState(scope,attr,'invalidCardLen');
         // }
 
-        return lenValid;
+        return lenValid && luhnValid;
     };
 
     _validators['expiry'] = function (val) {
