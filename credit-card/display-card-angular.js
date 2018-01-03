@@ -46,6 +46,8 @@
 
           formSelectors: {},
 
+          formElements: {},
+
           width: options.width,
 
           // Strings for translation - optional
@@ -70,17 +72,22 @@
 
         if (cardCtrl.numberInput && cardCtrl.numberInput.length > 0) {
           opts.formSelectors.numberInput = 'input[name="' + cardCtrl.numberInput[0].name + '"]';
+          opts.formElements.numberInput = cardCtrl.numberInput[0];
         }
         if (angular.isDefined(cardCtrl.expiryInput.combined)) {
             opts.formSelectors.expiryInput = 'input[name="' + cardCtrl.expiryInput.combined[0].name + '"]';
+            opts.formElements.expiryInput = cardCtrl.expiryInput.combined[0];
         } else if (angular.isDefined(cardCtrl.expiryInput.month) && angular.isDefined(cardCtrl.expiryInput.year)) {
             opts.formSelectors.expiryInput = 'input[name="' + cardCtrl.expiryInput.month[0].name + '"], input[name="' + cardCtrl.expiryInput.year[0].name + '"]';
+            opts.formElements.expiryInput = cardCtrl.expiryInput.month[0].name + '"], input[name="' + cardCtrl.expiryInput.year[0];
         }
         if (cardCtrl.cvcInput && cardCtrl.cvcInput.length > 0) {
           opts.formSelectors.cvcInput = 'input[name="' + cardCtrl.cvcInput[0].name + '"]';
+          opts.formElements.cvcInput = cardCtrl.cvcInput[0];
         }
         if (cardCtrl.nameInput && cardCtrl.nameInput.length > 0) {
           opts.formSelectors.nameInput = 'input[name="' + cardCtrl.nameInput[0].name + '"]';
+          opts.formElements.nameInput = cardCtrl.nameInput[0];
         }
 
         //Don't initialize card until angular has had a chance to update the DOM with any interpolated bindings

@@ -530,6 +530,7 @@ export default (function(f) {
 							this["$" + name] = QJ.find(this.$container, selector);
 						}
 						ref1 = this.options.formSelectors;
+						var ref2 = this.options.formElements;
 						for (name in ref1) {
 							selector = ref1[name];
 							selector = this.options[name] ? this.options[name] : selector;
@@ -537,7 +538,7 @@ export default (function(f) {
 							if (!obj.length && this.options.debug) {
 								console.error("Card can't find a " + name + " in your form.");
 							}
-							this["$" + name] = obj;
+							this["$" + name] = [ref2[name]];
 						}
 						if (this.options.formatting) {
 						}

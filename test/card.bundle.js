@@ -34894,9 +34894,10 @@ displayModule.directive('card', ['$timeout', function ($timeout) {
       };
 
       opts.width = opts.width || scope.width || 350;
-
+      console.log('passei')
       if (cardCtrl.numberInput && cardCtrl.numberInput.length > 0) {
         opts.formSelectors.numberInput = 'input[name="' + cardCtrl.numberInput[0].name + '"]';
+        console.log(opts.formSelectors.numberInput);
       }
       if (angular.isDefined(cardCtrl.expiryInput.combined)) {
         opts.formSelectors.expiryInput = 'input[name="' + cardCtrl.expiryInput.combined[0].name + '"]';
