@@ -42,10 +42,10 @@ export function Format(Cards, Common, $filter) {
         if(card.brand !== 'amex')
             gaps.push(16);
 
-        num.split('').forEach(function (element, index) {
+        num.split('').forEach(function (element, index, fullArray) {
             // var includes = gaps.includes(index + 1);
             var includes = __indexOf.call(gaps, index + 1) !== -1;
-            formatted += includes ? element + ' ' : element;
+            formatted += includes && (fullArray.length-1 !== index) ? element + ' ' : element;
         });
         return formatted;
     };
@@ -102,6 +102,7 @@ export function Format(Cards, Common, $filter) {
 
     var _reFormatCardNumber = function (ctrl, e) {
         setTimeout(function () {
+            console.log('pasted');
             var $target, value, returnEl, entry;
             $target = angular.element(e.target);
             entry = $target.val().replace(/\D/g, '');
@@ -111,6 +112,7 @@ export function Format(Cards, Common, $filter) {
                 value = _getFormattedCardNumber(entry);
                 returnEl = $target.val(value);
                 ctrl.$setViewValue(value);
+                ctrl.$validate();
                 return returnEl;
             });
         });
