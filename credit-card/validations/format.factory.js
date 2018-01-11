@@ -126,6 +126,7 @@ export function Format(Cards, Common, $filter) {
         elem.bind('input', Common.curry(_formatCardNumber)(ctrl));
         elem.bind('keydown', _formatBackCardNumber);
         elem.bind('paste', Common.curry(_reFormatCardNumber)(ctrl));
+        elem.bind('change', Common.curry(_reFormatCardNumber)(ctrl));
 
         ctrl.$parsers.push(_parseCardNumber);
         ctrl.$formatters.push(_getFormattedCardNumber);
