@@ -73,7 +73,7 @@ export function Format(Cards, Common, $filter) {
         Common.putCursorAtEnd.call(target, target);
     };
 
-    var _formatBackCardNumber = function (e) {
+    var _formatBackCardNumber = function (ctrl,e) {
         var $target, value;
 
         $target = angular.element(e.currentTarget);
@@ -90,19 +90,20 @@ export function Format(Cards, Common, $filter) {
         if (($target.prop('selectionStart') != null) && $target.prop('selectionStart') !== value.length) {
             return;
         }
-
+        let formattedValue = value;
         if (/\d\s$/.test(value) && !e.meta && e.keyCode >= 46) {
             e.preventDefault();
-            return $target.val(value.replace(/\d\s$/, ''));
+            formattedValue = value.replace(/\d\s$/, '');
         } else if (/\s\d?$/.test(value)) {
             e.preventDefault();
-            return $target.val(value.replace(/\s\d?$/, ''));
+            formattedValue = value.replace(/\s\d?$/, '');
         }
+        $target.val(formattedValue);
+        ctrl.$setViewValue(formattedValue);
     };
 
     var _reFormatCardNumber = function (ctrl, e) {
         setTimeout(function () {
-            console.log('pasted');
             var $target, value, returnEl, entry;
             $target = angular.element(e.target);
             entry = $target.val().replace(/\D/g, '');
@@ -113,7 +114,6 @@ export function Format(Cards, Common, $filter) {
                 returnEl = $target.val(value);
                 ctrl.$setViewValue(value);
                 ctrl.$validate();
-                return returnEl;
             });
         });
     };
@@ -124,7 +124,7 @@ export function Format(Cards, Common, $filter) {
 
     _formats['card'] = function (elem, ctrl) {
         elem.bind('input', Common.curry(_formatCardNumber)(ctrl));
-        elem.bind('keydown', _formatBackCardNumber);
+        elem.bind('keydown', Common.curry(_formatBackCardNumber)(ctrl));
         elem.bind('paste', Common.curry(_reFormatCardNumber)(ctrl));
         elem.bind('change', Common.curry(_reFormatCardNumber)(ctrl));
 

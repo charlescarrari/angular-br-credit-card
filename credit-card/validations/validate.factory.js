@@ -141,12 +141,6 @@ export function paymentsValidate($window, _Validate, _ValidateWatch, $q, Cards, 
         restrict: 'A',
         require: 'ngModel',
         link: function (scope, elem, attr, ctrl) {
-            function resolver(resolve, reject, valid) {
-                if (valid)
-                    resolve();
-                else
-                    reject();
-            }
             var type = attr.paymentsValidate;
 
             _ValidateWatch(type, ctrl, scope, attr);
