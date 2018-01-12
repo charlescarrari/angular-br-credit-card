@@ -4,14 +4,12 @@ export default function cardSelectBrand($window, _Format, Cards, $parse) {
         restrict: 'A',
         require: 'ngModel',
         link: function (scope, elem, attr, ngModel) {
-            var oldBrand = '';
-            elem[0].addEventListener('focus',function (event){ 
-                oldBrand = ngModel.$modelValue;
-            });
             elem[0].addEventListener('change',function (event){
-                if(oldBrand !== ngModel.$modelValue){
+                console.log(Cards.getIdentifiedBrand());
+                if(Cards.getIdentifiedBrand() !== 'default' && ngModel.$modelValue !== Cards.getIdentifiedBrand()){
                     Cards.setWarningState(scope,attr,'manualMode');
-                    oldBrand = ngModel.$modelValue;
+                }else{
+                    Cards.setWarningState(scope,attr,'off');
                 }
             });
         }

@@ -1,6 +1,6 @@
 {
   "name": "angular-br-credit-card",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Angular credit card module with validations for brazillian brands",
   "main": "credit-card/credit-card.module.js",
   "scripts": {

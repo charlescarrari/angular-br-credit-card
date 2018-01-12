@@ -21,12 +21,12 @@ export default function Card(binService,$q, $parse) {
 			binService.getBrandsByBIN(bin).then(function(res) {
 				identifiedCard = res.data;
 				identifiedCard.originBin = bin;
-				identifiedCard.inUse = true;
-				_setBrandInCard(identifiedCard.brand);
+				identifiedCard.usingAPICard = true;
+				_setBrandInCardDisplay(identifiedCard.brand);
 				resolve();
 			}).catch(function(error) {
 				identifiedCard.originBin = bin;
-				identifiedCard.inUse = false;
+				identifiedCard.usingAPICard = false;
 				reject('Erro ao identificar o cartão');
 			});
 		});
@@ -40,7 +40,7 @@ export default function Card(binService,$q, $parse) {
 		}
 		_setWarningState(scope,attr,'off');
 		identifiedCard = defaultCard;
-		identifiedCard.inUse = false;
+		identifiedCard.usingAPICard = false;
 	}
 
 	function _clearBrandDisplay(){
@@ -57,7 +57,7 @@ export default function Card(binService,$q, $parse) {
 		}
 	}
 
-	function _setBrandInCard(brand) {
+	function _setBrandInCardDisplay(brand) {
 		_clearBrandDisplay();
 		if(brand){
 			var newEl = document.createElement('div');
@@ -70,11 +70,15 @@ export default function Card(binService,$q, $parse) {
 	}
 
 	function _getCard() {
-		return identifiedCard.inUse ? identifiedCard : defaultCard;
+		return identifiedCard.usingAPICard ? identifiedCard : defaultCard;
 	}
 
 	function _getWarningState(){
 		return _warningState;
+	}
+
+	function _getIdentifiedBrand(){
+		return identifiedCard.brand;
 	}
 
 	function _setWarningState(scope,attr,newState){
@@ -88,8 +92,9 @@ export default function Card(binService,$q, $parse) {
 	return {
 		identify: _identify,
 		getCard: _getCard,
+		getIdentifiedBrand: _getIdentifiedBrand,
 		clearBrand: _clearBrand,
-		setBrandInCard: _setBrandInCard,
+		setBrandInCard: _setBrandInCardDisplay,
 		getWarningState: _getWarningState,
 		setWarningState: _setWarningState
 	};
