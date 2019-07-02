@@ -1,6 +1,6 @@
 {
   "name": "angular-br-credit-card",
-  "version": "1.0.8",
+  "version": "1.0.11",
   "description": "Angular credit card module with validations for brazillian brands",
   "main": "credit-card/credit-card.module.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "license": "MIT",
   "devDependencies": {
     "angular": "^1.6.6",
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.24.1",
     "ng-annotate-webpack-plugin": "^0.2.1-pre",
