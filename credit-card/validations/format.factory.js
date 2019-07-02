@@ -308,14 +308,6 @@ export function Format(Cards, Common, $filter) {
         elem.bind('keypress', _formatExpiry);
         elem.bind('keypress', _formatForwardSlash);
         elem.bind('keypress', _formatForwardExpiry);
-
-        elem.bind('keypress', _formatBackExpiry);
-
-        elem.bind('keydown', _restrictExpiry);
-        elem.bind('keydown', _formatExpiry);
-        elem.bind('keydown', _formatForwardSlash);
-        elem.bind('keydown', _formatForwardExpiry);
-
         elem.bind('keydown', _formatBackExpiry);
 
         ctrl.$parsers.push(_parseExpiry);
