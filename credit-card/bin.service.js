@@ -20,8 +20,7 @@ export default function binService($q, $http) {
 
 		$http.post(api + '/utilities/v2/graphql', body)
 			.then(function (response) {
-				if (response.data.brands.length) deferred.resolve(response.data.brands[0]);
-				else deferred.resolve(response.data.brands);
+				deferred.resolve(response.data);
 			})
 			.catch(function (response) {
 				deferred.reject(response);
