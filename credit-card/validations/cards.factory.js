@@ -19,7 +19,9 @@ export default function Card(binService,$q, $parse) {
 		_clearBrandDisplay();
 		return $q(function(resolve, reject) { //jshint ignore: line
 			binService.getBrandsByBIN(bin).then(function(res) {
-				identifiedCard = res.data;
+				identifiedCard = res.data.brands[0];
+				identifiedCard.brand = res.data.brands[0].key;
+				identifiedCard.brandName = res.data.brands[0].name;
 				identifiedCard.originBin = bin;
 				identifiedCard.usingAPICard = true;
 				_setBrandInCardDisplay(identifiedCard.brand);
