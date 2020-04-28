@@ -30,7 +30,6 @@ export default function Card(binService,$q, $parse) {
 			}).catch(function(error) {
 				identifiedCard.originBin = bin;
 				identifiedCard.usingAPICard = false;
-				reject('Erro ao identificar o cartão');
 			});
 		});
 	};
