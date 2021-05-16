@@ -20,6 +20,6 @@
     "babel-preset-es2015": "^6.24.1",
     "ng-annotate-webpack-plugin": "^0.2.1-pre",
     "uglifyjs-webpack-plugin": "^0.4.6",
-    "webpack": "^3.6.0"
+    "webpack": "^5.37.0"
   }
 }
